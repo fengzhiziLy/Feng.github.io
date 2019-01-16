@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>响应式的依赖收集追踪原理 | FengJS</title>
+    <meta name="description" content="在星辉斑斓里放歌">
+    <link rel="icon" href="/logo.png">
+    
+    <link rel="preload" href="/assets/css/0.styles.95357c96.css" as="style"><link rel="preload" href="/assets/js/app.89e27bc5.js" as="script"><link rel="preload" href="/assets/js/4.9e28626f.js" as="script"><link rel="prefetch" href="/assets/js/10.557d19ac.js"><link rel="prefetch" href="/assets/js/11.0829595e.js"><link rel="prefetch" href="/assets/js/12.8cc5df71.js"><link rel="prefetch" href="/assets/js/13.ba76adcf.js"><link rel="prefetch" href="/assets/js/14.0b2a3fc2.js"><link rel="prefetch" href="/assets/js/15.f099368c.js"><link rel="prefetch" href="/assets/js/16.12dfded7.js"><link rel="prefetch" href="/assets/js/17.72b15423.js"><link rel="prefetch" href="/assets/js/18.073e3472.js"><link rel="prefetch" href="/assets/js/19.ec40e95e.js"><link rel="prefetch" href="/assets/js/2.095251b5.js"><link rel="prefetch" href="/assets/js/20.89a5c7c9.js"><link rel="prefetch" href="/assets/js/21.64431adc.js"><link rel="prefetch" href="/assets/js/22.06ef6578.js"><link rel="prefetch" href="/assets/js/23.1d84ee60.js"><link rel="prefetch" href="/assets/js/24.5a2bf76c.js"><link rel="prefetch" href="/assets/js/25.6c2f0643.js"><link rel="prefetch" href="/assets/js/26.b9aa0344.js"><link rel="prefetch" href="/assets/js/27.645a0dad.js"><link rel="prefetch" href="/assets/js/28.d326e8d2.js"><link rel="prefetch" href="/assets/js/29.82ae9855.js"><link rel="prefetch" href="/assets/js/3.acc700d9.js"><link rel="prefetch" href="/assets/js/30.5a7aecf2.js"><link rel="prefetch" href="/assets/js/31.c1b43438.js"><link rel="prefetch" href="/assets/js/32.bfc31a87.js"><link rel="prefetch" href="/assets/js/33.a59ca48d.js"><link rel="prefetch" href="/assets/js/34.a0ea23a6.js"><link rel="prefetch" href="/assets/js/35.3136e8b9.js"><link rel="prefetch" href="/assets/js/36.4cf78385.js"><link rel="prefetch" href="/assets/js/37.7a6c8511.js"><link rel="prefetch" href="/assets/js/38.b5cdba11.js"><link rel="prefetch" href="/assets/js/39.97b0cf40.js"><link rel="prefetch" href="/assets/js/40.d83c0a89.js"><link rel="prefetch" href="/assets/js/41.e4b56630.js"><link rel="prefetch" href="/assets/js/42.bb058427.js"><link rel="prefetch" href="/assets/js/43.523e1456.js"><link rel="prefetch" href="/assets/js/44.f220aada.js"><link rel="prefetch" href="/assets/js/45.7439a720.js"><link rel="prefetch" href="/assets/js/46.ab917b61.js"><link rel="prefetch" href="/assets/js/47.c4cd2a55.js"><link rel="prefetch" href="/assets/js/48.7857028d.js"><link rel="prefetch" href="/assets/js/49.d75ba3df.js"><link rel="prefetch" href="/assets/js/5.6b5bbc32.js"><link rel="prefetch" href="/assets/js/6.9e360b1d.js"><link rel="prefetch" href="/assets/js/7.ddcb678d.js"><link rel="prefetch" href="/assets/js/8.185a1cc6.js"><link rel="prefetch" href="/assets/js/9.f2812463.js">
+    <link rel="stylesheet" href="/assets/css/0.styles.95357c96.css">
+  </head>
+  <body>
+    <div id="app" data-server-rendered="true"><div class="theme-container"><header class="navbar"><div class="sidebar-button"><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="img" viewBox="0 0 448 512" class="icon"><path fill="currentColor" d="M436 124H12c-6.627 0-12-5.373-12-12V80c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12z"></path></svg></div> <a href="/" class="home-link router-link-active"><!----> <span class="site-name">FengJS</span></a> <div class="links" style="max-width:nullpx;"><div class="search-box"><input aria-label="Search" autocomplete="off" spellcheck="false" value=""> <!----></div> <nav class="nav-links can-hide"><div class="nav-item"><a href="/" class="nav-link">主页</a></div><div class="nav-item"><div class="dropdown-wrapper"><a class="dropdown-title"><span class="title">学习笔记</span> <span class="arrow right"></span></a> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><!----> <a href="/ES6/" class="nav-link">ES6</a></li><li class="dropdown-item"><!----> <a href="/Vue/" class="nav-link router-link-active">Vue</a></li><li class="dropdown-item"><!----> <a href="/JS/" class="nav-link">JS进阶</a></li><li class="dropdown-item"><!----> <a href="/Interview/" class="nav-link">面试</a></li></ul></div></div><div class="nav-item"><a href="/notes/" class="nav-link">读书笔记</a></div><div class="nav-item"><a href="/essay/" class="nav-link">随笔</a></div><div class="nav-item"><a href="https://github.com/fengzhiziLy" target="_blank" rel="noopener noreferrer" class="nav-link external">
+  GitHub
+  <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg></a></div> <!----></nav></div></header> <div class="sidebar-mask"></div> <div class="sidebar"><nav class="nav-links"><div class="nav-item"><a href="/" class="nav-link">主页</a></div><div class="nav-item"><div class="dropdown-wrapper"><a class="dropdown-title"><span class="title">学习笔记</span> <span class="arrow right"></span></a> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><!----> <a href="/ES6/" class="nav-link">ES6</a></li><li class="dropdown-item"><!----> <a href="/Vue/" class="nav-link router-link-active">Vue</a></li><li class="dropdown-item"><!----> <a href="/JS/" class="nav-link">JS进阶</a></li><li class="dropdown-item"><!----> <a href="/Interview/" class="nav-link">面试</a></li></ul></div></div><div class="nav-item"><a href="/notes/" class="nav-link">读书笔记</a></div><div class="nav-item"><a href="/essay/" class="nav-link">随笔</a></div><div class="nav-item"><a href="https://github.com/fengzhiziLy" target="_blank" rel="noopener noreferrer" class="nav-link external">
+  GitHub
+  <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg></a></div> <!----></nav>  <ul class="sidebar-links"><li><div class="sidebar-group first collapsable"><p class="sidebar-heading open"><span>Vue学习</span> <span class="arrow down"></span></p> <ul class="sidebar-group-items"><li><a href="/Vue/" class="sidebar-link">深入学习Vue</a></li><li><a href="/Vue/vue基础知识1.html" class="sidebar-link">Vue基础知识1</a></li><li><a href="/Vue/vue基础知识2.html" class="sidebar-link">Vue基础知识2</a></li><li><a href="/Vue/vue基础知识之动画.html" class="sidebar-link">vue基础知识之动画</a></li><li><a href="/Vue/Vue运行机制全局概览.html" class="sidebar-link">Vue运行机制全局概览</a></li><li><a href="/Vue/Vue响应式系统的基本原理.html" class="sidebar-link">Vue响应式系统的基本原理</a></li><li><a href="/Vue/Vue响应式的依赖收集追踪原理.html" class="active sidebar-link">响应式的依赖收集追踪原理</a><ul class="sidebar-sub-headers"><li class="sidebar-sub-header"><a href="/Vue/Vue响应式的依赖收集追踪原理.html#为什么要依赖收集" class="sidebar-link">为什么要依赖收集</a></li><li class="sidebar-sub-header"><a href="/Vue/Vue响应式的依赖收集追踪原理.html#订阅者dep" class="sidebar-link">订阅者Dep</a></li><li class="sidebar-sub-header"><a href="/Vue/Vue响应式的依赖收集追踪原理.html#观察者watcher" class="sidebar-link">观察者Watcher</a></li><li class="sidebar-sub-header"><a href="/Vue/Vue响应式的依赖收集追踪原理.html#依赖收集" class="sidebar-link">依赖收集</a></li><li class="sidebar-sub-header"><a href="/Vue/Vue响应式的依赖收集追踪原理.html#总结" class="sidebar-link">总结</a></li></ul></li></ul></div></li></ul> </div> <div class="page"> <div class="content"><h2 id="为什么要依赖收集"><a href="#为什么要依赖收集" aria-hidden="true" class="header-anchor">#</a> 为什么要依赖收集</h2> <p>假设有一个Vue对象：</p> <div class="language-js extra-class"><pre class="language-js"><code><span class="token keyword">new</span> <span class="token class-name">Vue</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
+  template<span class="token punctuation">:</span> 
+    <span class="token template-string"><span class="token string">`&lt;div&gt;
+      &lt;span&gt;{{text1}}&lt;/span&gt;
+      &lt;span&gt;{{text2}}&lt;/span&gt;
+    &lt;/div&gt;`</span></span><span class="token punctuation">,</span>
+  data<span class="token punctuation">:</span> <span class="token punctuation">{</span>
+    text1<span class="token punctuation">:</span> <span class="token string">'text1'</span><span class="token punctuation">,</span>
+    text2<span class="token punctuation">:</span> <span class="token string">'text2'</span><span class="token punctuation">,</span>
+    text3<span class="token punctuation">:</span> <span class="token string">'text3'</span>
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span>
+<span class="token comment">// 然后做了这么一个操作</span>
+<span class="token keyword">this</span><span class="token punctuation">.</span>text3 <span class="token operator">=</span> <span class="token string">'modify text3'</span>
+</code></pre></div><p>修改了<code>data</code>中的<code>text3</code>数据，但是因为视图中并不需要用到<code>text3</code>，并不需要触发所讲的<code>cb</code>函数来更新视图，调用<code>cb</code>显然是不正确的.</p> <p>假设现在有一个全局对象，可能会在多个Vue对象中用到它进行展示：</p> <div class="language-js extra-class"><pre class="language-js"><code><span class="token keyword">let</span> globalObj <span class="token operator">=</span> <span class="token punctuation">{</span>
+  text1<span class="token punctuation">:</span> <span class="token string">'text1'</span>
+<span class="token punctuation">}</span>
+<span class="token keyword">let</span> o1 <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">Vue</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
+  template<span class="token punctuation">:</span>
+    <span class="token template-string"><span class="token string">`&lt;div&gt;
+      &lt;span&gt;{{text1}}&lt;/span&gt; 
+    &lt;div&gt;`</span></span><span class="token punctuation">,</span>
+  data<span class="token punctuation">:</span> globalObj
+<span class="token punctuation">}</span><span class="token punctuation">)</span>
+<span class="token keyword">let</span> o2 <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">Vue</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
+  template<span class="token punctuation">:</span>
+    <span class="token template-string"><span class="token string">`&lt;div&gt;
+      &lt;span&gt;{{text1}}&lt;/span&gt; 
+    &lt;div&gt;`</span></span><span class="token punctuation">,</span>
+  data<span class="token punctuation">:</span> globalObj
+<span class="token punctuation">}</span><span class="token punctuation">)</span>
+<span class="token comment">// 执行下面的操作</span>
+globalObj<span class="token punctuation">.</span>text1 <span class="token operator">=</span> <span class="token string">&quot;fengzhizi&quot;</span><span class="token punctuation">;</span>
+</code></pre></div><p>这样应该需要通知<code>o1</code>和<code>o2</code>两个vm实例进行视图的更新，「依赖收集」会让<code>text1</code>这个数据知道“哦～有两个地方依赖我的数据，我变化的时候需要通知它们～”</p> <p>最终形成数据与视图的一种对应关系：</p> <p><img src="/assets/img/4.c9c57917.png" alt="依赖关系"></p> <p>是如何实现的：</p> <h2 id="订阅者dep"><a href="#订阅者dep" aria-hidden="true" class="header-anchor">#</a> 订阅者Dep</h2> <p>实现一个订阅者Dep，它的主要作用是用来存放<code>Watcher</code>观察者对象</p> <div class="language-js extra-class"><pre class="language-js"><code><span class="token keyword">class</span> <span class="token class-name">Dep</span> <span class="token punctuation">{</span>
+  <span class="token function">constructor</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token comment">// 用来存放Watcher对象的数组</span>
+    <span class="token keyword">this</span><span class="token punctuation">.</span>subs <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token punctuation">]</span>
+  <span class="token punctuation">}</span>
+  <span class="token comment">// 在subs中添加一个Watcher对象</span>
+  <span class="token function">addSub</span><span class="token punctuation">(</span>sub<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">this</span><span class="token punctuation">.</span>subs<span class="token punctuation">.</span><span class="token function">push</span><span class="token punctuation">(</span>sub<span class="token punctuation">)</span>
+  <span class="token punctuation">}</span>
+  <span class="token comment">// 通知所有Watcher对象更新视图</span>
+  <span class="token function">notify</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">this</span><span class="token punctuation">.</span>subs<span class="token punctuation">.</span><span class="token function">forEach</span><span class="token punctuation">(</span><span class="token punctuation">(</span>sub<span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token punctuation">{</span>
+      sub<span class="token punctuation">.</span><span class="token function">update</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+    <span class="token punctuation">}</span><span class="token punctuation">)</span>
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+</code></pre></div><p>便于理解只实现了添加的部分代码，主要是两件事情：</p> <ol><li>用<code>addSub</code>方法可以在目前的<code>Dep</code>对象中增加一个<code>Watcher</code>的订阅操作</li> <li>用<code>notify</code>方法通知目前<code>Dep</code>对象的<code>subs</code>中的所有<code>Watcher</code>对象触发更新操作</li></ol> <h2 id="观察者watcher"><a href="#观察者watcher" aria-hidden="true" class="header-anchor">#</a> 观察者Watcher</h2> <div class="language-js extra-class"><pre class="language-js"><code><span class="token keyword">class</span> <span class="token class-name">Watcher</span> <span class="token punctuation">{</span>
+  <span class="token function">constructor</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token comment">// 在new一个Watcher对象时将该对象赋值给Dep.target,在get中用到</span>
+    Dep<span class="token punctuation">.</span>target <span class="token operator">=</span> <span class="token keyword">this</span><span class="token punctuation">;</span>
+  <span class="token punctuation">}</span>
+  <span class="token comment">// 更新视图的方法</span>
+  <span class="token function">update</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token string">'视图更新...'</span><span class="token punctuation">)</span>
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+Dep<span class="token punctuation">.</span>target <span class="token operator">=</span> <span class="token keyword">null</span><span class="token punctuation">;</span>
+</code></pre></div><h2 id="依赖收集"><a href="#依赖收集" aria-hidden="true" class="header-anchor">#</a> 依赖收集</h2> <p>接下来修改<code>defineReactive</code>以及Vue的构造函数，来完成依赖收集</p> <p>在闭包中增加一个Dep类的对象，用来收集<code>Watcher</code>对象。
+在对象被读的时候，会触发<code>reactiveGetter</code>函数把当前的<code>Watcher</code>对象(存放在Dep.target中)收集到<code>Dep</code>类中去
+之后如果当前对象被写的时候，会触发<code>reactiveSetter</code>方法，通知<code>Dep</code>类调用<code>notify</code>来触发所有的<code>Watcher</code>对象的<code>update</code>方法更新对应视图</p> <div class="language-js extra-class"><pre class="language-js"><code><span class="token keyword">function</span> <span class="token function">defineReactive</span><span class="token punctuation">(</span>obj<span class="token punctuation">,</span> key<span class="token punctuation">,</span> val<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token keyword">const</span> dep <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">Dep</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+  Object<span class="token punctuation">.</span><span class="token function">defineProperty</span><span class="token punctuation">(</span>obj<span class="token punctuation">,</span> key<span class="token punctuation">,</span> <span class="token punctuation">{</span>
+    enumerable<span class="token punctuation">:</span> <span class="token boolean">true</span><span class="token punctuation">,</span>
+    configurable<span class="token punctuation">:</span> <span class="token boolean">true</span><span class="token punctuation">,</span>
+    <span class="token keyword">get</span><span class="token punctuation">:</span> <span class="token keyword">function</span> <span class="token function">reactiveGetter</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+      <span class="token comment">//将Dep.target（即当前的Watcher对象存入dep的subs中）</span>
+      dep<span class="token punctuation">.</span><span class="token function">addSub</span><span class="token punctuation">(</span>Dep<span class="token punctuation">.</span>target<span class="token punctuation">)</span><span class="token punctuation">;</span>
+      <span class="token keyword">return</span> val<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span><span class="token punctuation">,</span>
+    <span class="token keyword">set</span><span class="token punctuation">:</span> <span class="token keyword">function</span> <span class="token function">reactiveSetter</span> <span class="token punctuation">(</span>newVal<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+      <span class="token keyword">if</span> <span class="token punctuation">(</span>newVal <span class="token operator">===</span> val<span class="token punctuation">)</span> <span class="token keyword">return</span><span class="token punctuation">;</span>
+      <span class="token comment">// 在set的时候触发dep的notify来通知所有的Watcher对象更新视图</span>
+      dep<span class="token punctuation">.</span><span class="token function">notify</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+    <span class="token punctuation">}</span>
+  <span class="token punctuation">}</span><span class="token punctuation">)</span>
+<span class="token punctuation">}</span>
+<span class="token keyword">class</span> <span class="token class-name">Vue</span> <span class="token punctuation">{</span>
+  <span class="token function">constructor</span><span class="token punctuation">(</span>options<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">this</span><span class="token punctuation">.</span>_data <span class="token operator">=</span> options<span class="token punctuation">.</span>data<span class="token punctuation">;</span>
+    <span class="token function">observer</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">.</span>_data<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token comment">//  新建一个Watcher观察者对象，这时候Dep.target会指向这个Watcher对象</span>
+    <span class="token keyword">new</span> <span class="token class-name">Watcher</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token comment">// 在这里模拟render的过程，为了触发test属性的get函数</span>
+    console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token string">'render~'</span><span class="token punctuation">,</span> <span class="token keyword">this</span><span class="token punctuation">.</span>_data<span class="token punctuation">.</span>test<span class="token punctuation">)</span>
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+</code></pre></div><p>完整代码片段：</p> <p><img src="/assets/img/code.33e53b21.png" alt="代码"></p> <h2 id="总结"><a href="#总结" aria-hidden="true" class="header-anchor">#</a> 总结</h2> <p>首先在<code>observer</code>的过程中注册一个<code>get</code>方法，该方法用来进行“依赖收集”。
+在它的闭包中会有一个<code>Dep</code>对象，这个对象用来存放Watcher对象的实例。
+其实“依赖收集”的过程就是把<code>Watcher</code>实例存放到对应的<code>Dep</code>中。
+<code>get</code>方法可以让当前的<code>Watcher</code>对象(Dep.target)存放到它的<code>subs</code>中(<code>addSub</code>)方法，
+在数据变化时，<code>set</code>会调用<code>Dep</code>对象的<code>notify</code>方法通知它内部所有的<code>Watcher</code>对象进行视图更新。</p> <p>这是<code>Object.defineProperty</code>的<code>set/get</code>方法处理的事情，“依赖收集”的前提条件还有两个：</p> <ol><li>触发<code>get</code>方法</li> <li>新建一个Watcher对象</li></ol> <p>这个在Vue的构造类中处理，新建一个<code>Watcher</code>对象只需要new出来，这时候<code>Dep.target</code>已经指向了这个new出来的<code>Watcher</code>对象。
+而触发<code>get</code>方法也简单，实际上只要把<code>render function</code>进行渲染，那么其中的依赖的对象都会被“读取”，这里通过打印来模拟这个过程，读取test来触发<code>get</code>进行依赖收集</p></div> <div class="page-edit"><!----> <!----></div> <div class="page-nav"><p class="inner"><span class="prev">
+        ←
+        <a href="/Vue/Vue响应式的依赖收集追踪原理.html" class="prev">
+          响应式的依赖收集追踪原理
+        </a></span> <!----></p></div> </div> <!----></div></div>
+    <script src="/assets/js/4.9e28626f.js" defer></script><script src="/assets/js/app.89e27bc5.js" defer></script>
+  </body>
+</html>
